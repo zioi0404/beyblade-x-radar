@@ -10,7 +10,7 @@ from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parent
 INPUT = ROOT / "tracked-products.json"
 OUTPUT = ROOT / "monitor-report.json"
 TIMEOUT = 20
