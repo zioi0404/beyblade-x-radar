@@ -1,0 +1,18 @@
+{
+  "generated_at": "2026-10-16T18:53:11.922013+00:00",
+  "schedule": "hourly (GitHub Actions; may be delayed by GitHub)",
+  "total": 0,
+  "counts": {
+    "in_stock": 0,
+    "possible_in_stock": 0,
+    "out_of_stock": 0,
+    "unknown": 0
+  },
+  "results": [],
+  "limitations": [
+    "This report is a heuristic, not a guarantee of stock availability.",
+    "Some stores block automated requests, require JavaScript, or display generic purchase text.",
+    "HTTP errors and timeouts are not treated as out of stock.",
+    "The website localStorage watchlist is not automatically synced to tracked-products.json yet."
+  ]
+}
