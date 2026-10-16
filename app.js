@@ -2,6 +2,7 @@
   "use strict";
   const $ = (id) => document.getElementById(id);
   const STORAGE_KEY = "bx-radar-products-v1";
+  const APP_VERSION = "1.1.0";
   const SETTINGS_KEY = "bx-radar-settings-v1";
   const demoProducts = [
     {id:"demo-1",name:"UX-01 Dran Buster 1-60A",platform:"Amazon JP",stock:"unknown",price:1980,currency:"JPY",target:1600,url:""},
@@ -31,9 +32,41 @@
     if (!raw) return "";
     try { const url = new URL(raw); return ["http:","https:"].includes(url.protocol) ? url.href : ""; } catch (_) { return ""; }
   }
+  function inferPlatform(url) {
+    const host = url.hostname.toLowerCase().replace(/^www\./, "");
+    if (host === "amazon.co.jp" || host.endsWith(".amazon.co.jp")) return "Amazon JP";
+    if (host === "shopee.tw" || host.endsWith(".shopee.tw")) return "Shopee 蝦皮";
+    if (host === "ruten.com.tw" || host.endsWith(".ruten.com.tw")) return "露天拍賣";
+    if (host === "momo.com.tw" || host.endsWith(".momo.com.tw")) return "momo";
+    if (host === "pchome.com.tw" || host.endsWith(".pchome.com.tw")) return "PChome";
+    if (host === "tw.buy.yahoo.com" || host.endsWith(".yahoo.com.tw")) return "Yahoo 購物";
+    return "其他";
+  }
+  function suggestNameFromUrl(url) {
+    const host = url.hostname.replace(/^www\./i, "");
+    const segments = url.pathname.split("/").filter(Boolean);
+    let candidate = segments.length ? segments[segments.length - 1] : host;
+    try { candidate = decodeURIComponent(candidate); } catch (_) {}
+    candidate = candidate.replace(/\.(html?|php|aspx?)$/i, "").replace(/[-_+]+/g, " ").replace(/\s+/g, " ").trim();
+    if (/^[A-Z0-9]{8,}$/i.test(candidate) || /^dp$/i.test(candidate) || /^product$/i.test(candidate)) candidate = "";
+    if (!candidate || candidate.length < 3) candidate = `${host} 商品（請補上名稱）`;
+    return candidate.slice(0, 100);
+  }
+  function parseProductUrl(showToast = true) {
+    const raw = $("productUrl").value.trim();
+    const normalized = validHttpUrl(raw);
+    if (!normalized) { $("urlParseFeedback").textContent = "請先貼上有效的 http 或 https 商品網址。"; if (showToast) toast("請先貼上有效的商品網址"); return false; }
+    const url = new URL(normalized);
+    const platform = inferPlatform(url);
+    $("productPlatform").value = platform;
+    if (!$("productName").value.trim() || $("productName").value.includes("商品（請補上名稱）")) $("productName").value = suggestNameFromUrl(url);
+    $("urlParseFeedback").textContent = `辨識平台：${platform}｜網域：${url.hostname}。商品名稱為網址推測，請核對。`;
+    if (showToast) toast("已整理網址線索；請核對商品名稱及價格");
+    return true;
+  }
   function stockInfo(stock) {
-    if (stock === "in") return {label:"示範：有貨", cls:"in"};
-    if (stock === "out") return {label:"示範：缺貨", cls:"out"};
+    if (stock === "in") return {label:"手動記錄：有貨", cls:"in"};
+    if (stock === "out") return {label:"手動記錄：缺貨", cls:"out"};
     return {label:"尚未確認", cls:""};
   }
   function priceText(p) { return p.price === "" || p.price == null ? "未填價格" : money(p.price,p.currency); }
@@ -78,6 +111,7 @@
     $("productCurrency").value = product?.currency || "TWD";
     $("productTarget").value = product?.target ?? "";
     $("productUrl").value = product?.url || "";
+    $("urlParseFeedback").textContent = "可辨識平台及網址路徑；不會讀取賣場即時價格／庫存。";
     $("productDialog").showModal();
   }
   function closeForm() { $("productDialog").close(); }
@@ -101,11 +135,14 @@
     $("closeDialog").addEventListener("click", closeForm);
     $("cancelDialog").addEventListener("click", closeForm);
     ["searchInput","platformFilter","statusFilter"].forEach(id => $(id).addEventListener(id==="searchInput"?"input":"change", render));
+    $("parseUrlBtn").addEventListener("click", () => parseProductUrl(true));
+    $("productUrl").addEventListener("change", () => { if ($("productUrl").value.trim()) parseProductUrl(false); });
     $("productForm").addEventListener("submit", event => {
       event.preventDefault();
-      const name = $("productName").value.trim();
-      if (!name) { toast("請輸入商品名稱"); return; }
       const rawUrl = $("productUrl").value.trim();
+      if (rawUrl) parseProductUrl(false);
+      const name = $("productName").value.trim();
+      if (!name) { toast("請輸入商品名稱；可先貼網址並按整理"); return; }
       const url = validHttpUrl(rawUrl);
       if (rawUrl && !url) { toast("請輸入有效的 http 或 https 商品網址"); return; }
       const id = $("productId").value || `p-${Date.now()}-${Math.random().toString(36).slice(2,7)}`;

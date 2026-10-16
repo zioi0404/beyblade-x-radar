@@ -24,7 +24,7 @@
       <div class="hero-copy">
         <p class="eyebrow"><span class="live-dot"></span> YOUR COLLECTION CONTROL CENTER</p>
         <h1>下一波補貨，<br><em>別再錯過。</em></h1>
-        <p class="subhead">集中管理追蹤商品、目標價格與跨境成本。這是可安裝的網頁 App 原型；尚未連接商店即時庫存。</p>
+        <p class="subhead">貼上商品網址，快速整理平台與網址線索，集中管理目標價格與跨境成本。雲端每小時監控是下一階段目標，目前尚未啟用。</p>
         <div class="hero-actions">
           <button class="button button-primary" id="addTopBtn">＋ 新增追蹤商品</button>
           <a class="button button-quiet" href="#watchlist">查看追蹤清單 <span>↓</span></a>
@@ -34,7 +34,7 @@
     </section>
 
     <section class="notice" aria-label="原型提醒">
-      <span class="notice-icon">i</span><p><strong>原型模式</strong>　商品與庫存狀態是示範資料，不代表賣場即時狀態。真正的自動補貨監控、背景通知與自動下單，需另建後端並取得各平台授權。</p>
+      <span class="notice-icon">i</span><p><strong>第一階段更新</strong>　貼上網址後可辨識常見平台並從網址路徑產生可編輯的名稱建議；受瀏覽器跨網域限制，不能直接讀取賣場頁面內的真實商品標題、價格或庫存。每小時雲端檢查目前尚未啟用。</p>
     </section>
 
     <section class="stats-grid">
@@ -48,7 +48,7 @@
       <div class="toolbar">
         <label class="searchbox"><span>⌕</span><input id="searchInput" type="search" placeholder="搜尋商品、平台…" aria-label="搜尋商品"></label>
         <select id="platformFilter" aria-label="依平台篩選"><option value="all">所有平台</option><option>Shopee 蝦皮</option><option>momo</option><option>PChome</option><option>露天拍賣</option><option>Yahoo 購物</option><option>玩具店</option><option>Amazon JP</option><option>其他</option></select>
-        <select id="statusFilter" aria-label="依狀態篩選"><option value="all">所有狀態</option><option value="in">示範：有貨</option><option value="out">示範：缺貨</option><option value="unknown">尚未確認</option></select>
+        <select id="statusFilter" aria-label="依狀態篩選"><option value="all">所有狀態</option><option value="in">手動記錄：有貨</option><option value="out">手動記錄：缺貨</option><option value="unknown">尚未確認</option></select>
       </div>
       <div id="productList" class="product-list"></div>
       <div id="emptyState" class="empty-state hidden"><div class="empty-symbol">＋</div><h3>清單還是空的</h3><p>新增第一個想追蹤的戰鬥陀螺 X 商品。</p><button class="button button-primary" id="emptyAddBtn">新增追蹤商品</button></div>
@@ -69,7 +69,7 @@
     </section>
 
     <section class="section automation-section">
-      <div class="section-heading"><div><p class="eyebrow">ALERTS / 03</p><h2>提醒與自動購買</h2></div><span class="tag tag-muted">後端尚未連接</span></div>
+      <div class="section-heading"><div><p class="eyebrow">ALERTS / 03</p><h2>提醒與自動購買</h2></div><span class="tag tag-muted">每小時監控：規劃中</span></div>
       <div class="feature-row"><div class="feature-icon">⌁</div><div class="feature-text"><strong>價格與補貨提醒</strong><p>目前可設定追蹤與目標價，但此版本不會在 App 關閉時檢查賣場或傳送推播。</p></div><label class="toggle-wrap"><input id="alertsToggle" type="checkbox"><span class="toggle"></span></label></div>
       <div class="feature-row"><div class="feature-icon">↗</div><div class="feature-text"><strong>自動購買</strong><p>目前僅保留設定介面。未接上正式 API 與安全的使用者授權前，不會自動結帳或儲存帳密、付款資料。</p></div><label class="toggle-wrap"><input id="autoBuyToggle" type="checkbox" disabled><span class="toggle"></span></label></div>
       <p id="settingsFeedback" class="settings-feedback">提醒設定會儲存在這台裝置的瀏覽器中。</p>
@@ -82,12 +82,13 @@
     <form id="productForm" method="dialog">
       <div class="dialog-heading"><div><p class="eyebrow">WATCHLIST EDITOR</p><h2 id="dialogTitle">新增追蹤商品</h2></div><button class="icon-button" id="closeDialog" type="button" aria-label="關閉">×</button></div>
       <input id="productId" type="hidden">
-      <label>商品名稱<input id="productName" required maxlength="100" placeholder="例：UX-XX 戰鬥陀螺"></label>
-      <div class="form-row"><label>平台<select id="productPlatform"><option>Shopee 蝦皮</option><option>momo</option><option>PChome</option><option>露天拍賣</option><option>Yahoo 購物</option><option>玩具店</option><option>Amazon JP</option><option>其他</option></select></label><label>庫存狀態<select id="productStock"><option value="unknown">尚未確認</option><option value="in">示範：有貨</option><option value="out">示範：缺貨</option></select></label></div>
+      <label>商品網址（先貼網址，再按整理）<input id="productUrl" type="url" placeholder="https://…" inputmode="url"></label>
+      <div class="url-tools"><button class="mini-btn accent" id="parseUrlBtn" type="button">整理網址資訊</button><span id="urlParseFeedback" class="url-parse-feedback">可辨識平台及網址路徑；不會讀取賣場即時價格／庫存。</span></div>
+      <label>商品名稱（可自行修改）<input id="productName" required maxlength="100" placeholder="貼上網址後可先產生名稱建議"></label>
+      <div class="form-row"><label>平台<select id="productPlatform"><option>Shopee 蝦皮</option><option>momo</option><option>PChome</option><option>露天拍賣</option><option>Yahoo 購物</option><option>玩具店</option><option>Amazon JP</option><option>其他</option></select></label><label>庫存狀態<select id="productStock"><option value="unknown">尚未確認</option><option value="in">手動記錄：有貨</option><option value="out">手動記錄：缺貨</option></select></label></div>
       <div class="form-row"><label>目前價格<input id="productPrice" type="number" min="0" step="1" inputmode="decimal" placeholder="例：1290"></label><label>幣別<select id="productCurrency"><option value="TWD">TWD 台幣</option><option value="JPY">JPY 日圓</option></select></label></div>
       <label>目標價格（選填）<input id="productTarget" type="number" min="0" step="1" inputmode="decimal" placeholder="低於此價格時方便辨識"></label>
-      <label>商品網址（選填）<input id="productUrl" type="url" placeholder="https://…" inputmode="url"></label>
-      <p class="dialog-note">庫存狀態是你手動記錄的備註，不會自動驗證賣場。請確認網址來自可信任的商店。</p>
+      <p class="dialog-note">網址整理只會解析你貼上的網址（網域、路徑與部分商品 ID）。因為 iPhone 瀏覽器的跨網域限制，這個版本不會自動讀取賣場頁面的商品標題、價格、折扣或庫存；這些欄位仍需手動確認。請確認網址來自可信任的商店。</p>
       <div class="dialog-actions"><button class="button button-quiet" id="cancelDialog" type="button">取消</button><button class="button button-primary" type="submit">儲存商品</button></div>
     </form>
   </dialog>
