@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#101114">
+  <meta name="description" content="BEYBLADE X RADAR — 戰鬥陀螺 X 補貨與價格追蹤工具">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="icon" href="./icons/icon-192.png">
+  <link rel="apple-touch-icon" href="./icons/icon-192.png">
+  <link rel="stylesheet" href="./styles.css">
+  <title>BEYBLADE X RADAR</title>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#" aria-label="BEYBLADE X RADAR 首頁">
+      <span class="brand-mark">X</span><span><strong>BEYBLADE</strong><small>X RADAR / 台灣補貨雷達</small></span>
+    </a>
+    <button id="installBtn" class="button button-outline hidden" type="button">加入主畫面</button>
+  </header>
+
+  <main class="wrap">
+    <section class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow"><span class="live-dot"></span> YOUR COLLECTION CONTROL CENTER</p>
+        <h1>下一波補貨，<br><em>別再錯過。</em></h1>
+        <p class="subhead">集中管理追蹤商品、目標價格與跨境成本。這是可安裝的網頁 App 原型；尚未連接商店即時庫存。</p>
+        <div class="hero-actions">
+          <button class="button button-primary" id="addTopBtn">＋ 新增追蹤商品</button>
+          <a class="button button-quiet" href="#watchlist">查看追蹤清單 <span>↓</span></a>
+        </div>
+      </div>
+      <div class="hero-orb" aria-hidden="true"><div class="orb-ring ring-one"></div><div class="orb-ring ring-two"></div><div class="orb-core">BX<br><small>RADAR</small></div><span class="orb-chip chip-a">PRICE</span><span class="orb-chip chip-b">STOCK</span></div>
+    </section>
+
+    <section class="notice" aria-label="原型提醒">
+      <span class="notice-icon">i</span><p><strong>原型模式</strong>　商品與庫存狀態是示範資料，不代表賣場即時狀態。真正的自動補貨監控、背景通知與自動下單，需另建後端並取得各平台授權。</p>
+    </section>
+
+    <section class="stats-grid">
+      <article class="stat-card"><span class="stat-label">追蹤商品</span><strong id="statCount">0</strong><span class="stat-foot">YOUR WATCHLIST</span></article>
+      <article class="stat-card"><span class="stat-label">目標價提醒</span><strong id="statTargets">0</strong><span class="stat-foot">TARGET PRICE</span></article>
+      <article class="stat-card"><span class="stat-label">補貨狀態</span><strong id="statStock">—</strong><span class="stat-foot">DEMO STATUS ONLY</span></article>
+    </section>
+
+    <section id="watchlist" class="section">
+      <div class="section-heading"><div><p class="eyebrow">TRACKER / 01</p><h2>追蹤清單</h2></div><button class="button button-primary" id="addBtn">＋ 新增商品</button></div>
+      <div class="toolbar">
+        <label class="searchbox"><span>⌕</span><input id="searchInput" type="search" placeholder="搜尋商品、平台…" aria-label="搜尋商品"></label>
+        <select id="platformFilter" aria-label="依平台篩選"><option value="all">所有平台</option><option>Shopee 蝦皮</option><option>momo</option><option>PChome</option><option>露天拍賣</option><option>Yahoo 購物</option><option>玩具店</option><option>Amazon JP</option><option>其他</option></select>
+        <select id="statusFilter" aria-label="依狀態篩選"><option value="all">所有狀態</option><option value="in">示範：有貨</option><option value="out">示範：缺貨</option><option value="unknown">尚未確認</option></select>
+      </div>
+      <div id="productList" class="product-list"></div>
+      <div id="emptyState" class="empty-state hidden"><div class="empty-symbol">＋</div><h3>清單還是空的</h3><p>新增第一個想追蹤的戰鬥陀螺 X 商品。</p><button class="button button-primary" id="emptyAddBtn">新增追蹤商品</button></div>
+    </section>
+
+    <section class="section calculator-section">
+      <div class="section-heading"><div><p class="eyebrow">CROSS-BORDER / 02</p><h2>日本代購成本試算</h2></div><span class="tag">JPY → TWD</span></div>
+      <p class="section-intro">自行輸入匯率與費用，快速估算日本購買總成本。結果僅供參考，不會自動取得即時匯率。</p>
+      <div class="calculator-grid">
+        <div class="calc-fields">
+          <label>商品價格（日圓）<div class="input-unit"><span>¥</span><input id="jpyPrice" type="number" min="0" value="3500" inputmode="decimal"></div></label>
+          <label>日圓匯率（每 1 JPY 換台幣）<div class="input-unit"><span>NT$</span><input id="fxRate" type="number" min="0" step="0.0001" value="0.22" inputmode="decimal"></div></label>
+          <label>國際運費（台幣）<div class="input-unit"><span>NT$</span><input id="shipping" type="number" min="0" value="180" inputmode="decimal"></div></label>
+          <label>其他費用／稅金（台幣）<div class="input-unit"><span>NT$</span><input id="otherFees" type="number" min="0" value="80" inputmode="decimal"></div></label>
+        </div>
+        <div class="calc-result"><span class="eyebrow">ESTIMATED TOTAL</span><div id="totalCost" class="total-cost">NT$ 1,030</div><div class="calc-line"><span>商品折合台幣</span><strong id="convertedCost">NT$ 770</strong></div><div class="calc-line"><span>運費與其他費用</span><strong id="feeCost">NT$ 260</strong></div><p>實際費用依匯率、刷卡手續費、運送方式及海關規定而異。</p></div>
+      </div>
+    </section>
+
+    <section class="section automation-section">
+      <div class="section-heading"><div><p class="eyebrow">ALERTS / 03</p><h2>提醒與自動購買</h2></div><span class="tag tag-muted">後端尚未連接</span></div>
+      <div class="feature-row"><div class="feature-icon">⌁</div><div class="feature-text"><strong>價格與補貨提醒</strong><p>目前可設定追蹤與目標價，但此版本不會在 App 關閉時檢查賣場或傳送推播。</p></div><label class="toggle-wrap"><input id="alertsToggle" type="checkbox"><span class="toggle"></span></label></div>
+      <div class="feature-row"><div class="feature-icon">↗</div><div class="feature-text"><strong>自動購買</strong><p>目前僅保留設定介面。未接上正式 API 與安全的使用者授權前，不會自動結帳或儲存帳密、付款資料。</p></div><label class="toggle-wrap"><input id="autoBuyToggle" type="checkbox" disabled><span class="toggle"></span></label></div>
+      <p id="settingsFeedback" class="settings-feedback">提醒設定會儲存在這台裝置的瀏覽器中。</p>
+    </section>
+
+    <footer class="footer"><div class="footer-brand"><span class="brand-mark small">X</span><strong>BEYBLADE X RADAR</strong></div><p>非官方粉絲工具，與 TAKARA TOMY 無隸屬關係。商品名稱與平台標示僅供個人追蹤用途。</p><p>資料儲存於目前裝置；清除瀏覽器網站資料可能會移除追蹤清單。</p></footer>
+  </main>
+
+  <dialog id="productDialog" class="product-dialog">
+    <form id="productForm" method="dialog">
+      <div class="dialog-heading"><div><p class="eyebrow">WATCHLIST EDITOR</p><h2 id="dialogTitle">新增追蹤商品</h2></div><button class="icon-button" id="closeDialog" type="button" aria-label="關閉">×</button></div>
+      <input id="productId" type="hidden">
+      <label>商品名稱<input id="productName" required maxlength="100" placeholder="例：UX-XX 戰鬥陀螺"></label>
+      <div class="form-row"><label>平台<select id="productPlatform"><option>Shopee 蝦皮</option><option>momo</option><option>PChome</option><option>露天拍賣</option><option>Yahoo 購物</option><option>玩具店</option><option>Amazon JP</option><option>其他</option></select></label><label>庫存狀態<select id="productStock"><option value="unknown">尚未確認</option><option value="in">示範：有貨</option><option value="out">示範：缺貨</option></select></label></div>
+      <div class="form-row"><label>目前價格<input id="productPrice" type="number" min="0" step="1" inputmode="decimal" placeholder="例：1290"></label><label>幣別<select id="productCurrency"><option value="TWD">TWD 台幣</option><option value="JPY">JPY 日圓</option></select></label></div>
+      <label>目標價格（選填）<input id="productTarget" type="number" min="0" step="1" inputmode="decimal" placeholder="低於此價格時方便辨識"></label>
+      <label>商品網址（選填）<input id="productUrl" type="url" placeholder="https://…" inputmode="url"></label>
+      <p class="dialog-note">庫存狀態是你手動記錄的備註，不會自動驗證賣場。請確認網址來自可信任的商店。</p>
+      <div class="dialog-actions"><button class="button button-quiet" id="cancelDialog" type="button">取消</button><button class="button button-primary" type="submit">儲存商品</button></div>
+    </form>
+  </dialog>
+  <div id="toast" role="status" aria-live="polite" class="toast"></div>
+  <script src="./app.js"></script>
+</body>
+</html>
